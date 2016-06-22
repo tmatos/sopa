@@ -16,7 +16,7 @@ import config
 connection = MongoClient('localhost', 27017)
 db = connection.SOPA1
 
-url = "https://www.googleapis.com/qpxExpress/v1/trips/search?key=" + config.key
+url = 'https://www.googleapis.com/qpxExpress/v1/trips/search?key=' + config.key
 
 while 1:
     cursor = db.tarefas.find()
@@ -36,11 +36,11 @@ while 1:
         
         obj_resp = json.loads(response)
         obj_time = datetime.datetime.now()
-        obj_ponto = { "tarefa" : it['numero'], "time" : obj_time, "response" : obj_resp }
+        obj_ponto = { 'tarefa' : it['numero'], 'time' : obj_time, 'response' : obj_resp }
         texto = json.dumps(obj_ponto, default=json_util.default)
         
         # para debug
-        #v_file = open("ssaGRU1.json", "a")
+        #v_file = open('ssaGRU1.json', 'a')
         #v_file.write(texto)
         #v_file.close()
         
@@ -48,6 +48,6 @@ while 1:
         # salva no banco
         db.pontos.insert_one(obj_ponto)
         
-        print 'INFO: Obteve ponto da tarefa ', obj_ponto["tarefa"]
+        print 'INFO: Obteve ponto da tarefa ', obj_ponto['tarefa']
     
     time.sleep(20)
