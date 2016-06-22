@@ -1,33 +1,36 @@
+﻿# -*- coding: utf-8 -*-
+
 import urllib
 import urllib2
 import json
 import time
-import os
-import pymongo
+import datetime
 
+from bson import json_util
 from pymongo import MongoClient
 
+# configuracoes do programa
+import config
+
 #connect to database
-connection = MongoClient ('localhost', 27017)
+connection = MongoClient('localhost', 27017)
 
 db = connection.SOPA1
 
-collection = db.SOPA1
-
 while 1:    
-    url = "https://www.googleapis.com/qpxExpress/v1/trips/search?key=AIzaSyA3758yM14aTX7aI9_v5AvKI2X1m56HszI" 
+    url = "https://www.googleapis.com/qpxExpress/v1/trips/search?key=" + config.key
     
     code = {
         "request": {
             "passengers": {
                 "adultCount": 1,
-                "childCount": 1
+                "childCount": 0
             },
             "slice": [
                 {
                     "origin": "SSA",
                     "destination": "GRU",
-                    "date": "2015-12-19",
+                    "date": "2016-07-19",
                     "permittedDepartureTime":
                     {
                         "kind": "qpxexpress#timeOfDayRange",
@@ -38,7 +41,7 @@ while 1:
                 {
                     "origin": "GRU",
                     "destination": "SSA",
-                    "date": "2015-12-25",
+                    "date": "2016-12-25",
                     "permittedDepartureTime":
                     {
                         "kind": "qpxexpress#timeOfDayRange",
@@ -51,32 +54,30 @@ while 1:
         }
     }
     
-    
     jsonreq = json.dumps(code, encoding = 'utf-8')
-    req = urllib2.Request(url, jsonreq, {'Content-Type': 'application/json'})
+    
+    headers = {'Content-Type': 'application/json'}
+    req = urllib2.Request(url, jsonreq, headers)
+    
     flight = urllib2.urlopen(req)
+    
     response = flight.read()
     flight.close()
-    #print(response)
-    print("----------------")
+    
+    obj_resp = json.loads(response)
+    obj_time = datetime.datetime.now()
+    obj_ponto = { "tarefa" : 1, "time" : obj_time, "response" : obj_resp }
+    texto = json.dumps(obj_ponto, default=json_util.default)
+    
+    # para debug
+    #v_file = open("ssaGRU1.json", "a")
+    #v_file.write(texto)
+    #v_file.close()
     
     
-    texto=(response)
-    v_file= open("ssaGRU1.json" ,"a")
+    # salva no banco
+    db.pontos.insert_one(obj_ponto)
     
+    print 'INFO: Obteve ponto da tarefa ', obj_ponto["tarefa"]
     
-    v_file.write(texto)
-    v_file.close()
-    
-    time.sleep(0.7) 
-    os.system("mongoimport --db SOPA1 --collection SOPA1 <ssaGRU1.json")
-    
-    
-    time.sleep(15)
-    
-
-current_time = time.strftime("%H:%M", time.localtime())
-v_file = open("ssaGRU.json", "a")
-v_file.write(str(current_time) + ' : ')
-v_file.write( '\n')
-v_file.close()
+    time.sleep(20)
