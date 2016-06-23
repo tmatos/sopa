@@ -1,13 +1,14 @@
 ﻿# -*- coding: utf-8 -*-
 
-import urllib
-import urllib2
 import json
 import time
 import datetime
 
+import urllib.request
 from bson import json_util
 from pymongo import MongoClient
+
+import ssl
 
 # configuracoes do programa
 import config
@@ -24,14 +25,14 @@ while 1:
     for it in cursor:
         code = it['code']
     
-        jsonreq = json.dumps(code, encoding = 'utf-8')
+        jsonreq = json.dumps(code).encode('utf-8')
         
         headers = {'Content-Type': 'application/json'}
-        req = urllib2.Request(url, jsonreq, headers)
+        req = urllib.request.Request(url, jsonreq, headers)
+
+        flight = urllib.request.urlopen(req)
         
-        flight = urllib2.urlopen(req)
-        
-        response = flight.read()
+        response = flight.read().decode('utf-8')
         flight.close()
         
         obj_resp = json.loads(response)
@@ -48,6 +49,6 @@ while 1:
         # salva no banco
         db.pontos.insert_one(obj_ponto)
         
-        print 'INFO: Obteve ponto da tarefa ', obj_ponto['tarefa']
+        print('INFO: Obteve ponto da tarefa ', obj_ponto['tarefa'])
     
     time.sleep(20)
