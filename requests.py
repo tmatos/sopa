@@ -30,24 +30,31 @@ while 1:
         headers = {'Content-Type': 'application/json'}
         req = urllib.request.Request(url, jsonreq, headers)
 
-        flight = urllib.request.urlopen(req)
+        ssl._create_default_https_context = ssl._create_unverified_context ### por problema com certificados
+        flight = urllib.request.urlopen(req)#, cafile='./certs/googleapis.pem') #FIXME
         
         response = flight.read().decode('utf-8')
         flight.close()
         
         obj_resp = json.loads(response)
-        obj_time = datetime.datetime.now()
+        obj_time = datetime.datetime.now() ### mudar esta funcao quando for conveniente!
         obj_ponto = { 'tarefa' : it['numero'], 'time' : obj_time, 'response' : obj_resp }
-        texto = json.dumps(obj_ponto, default=json_util.default)
         
         # para debug
         #v_file = open('ssaGRU1.json', 'a')
+        #texto = json.dumps(obj_ponto, default=json_util.default)
         #v_file.write(texto)
         #v_file.close()
         
         
         # salva no banco
         db.pontos.insert_one(obj_ponto)
+        
+        #atualiza info na lista de tarefas
+        db.tarefas.update_one(
+            {'numero': it['numero']},
+            {'$set': {'last_query': obj_time}}
+        )
         
         print('INFO: Obteve ponto da tarefa ', obj_ponto['tarefa'])
     
