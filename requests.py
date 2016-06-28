@@ -40,12 +40,6 @@ while 1:
         obj_time = datetime.datetime.now() ### mudar esta funcao quando for conveniente!
         obj_ponto = { 'tarefa' : it['numero'], 'time' : obj_time, 'response' : obj_resp }
         
-        # para debug
-        #v_file = open('ssaGRU1.json', 'a')
-        #texto = json.dumps(obj_ponto, default=json_util.default)
-        #v_file.write(texto)
-        #v_file.close()
-        
         
         # salva no banco
         db.pontos.insert_one(obj_ponto)

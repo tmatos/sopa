@@ -1,0 +1,21 @@
+﻿{% extends "layout.html" %}
+
+{% block content %}
+  
+  {% if pontos == None %}
+  
+    <b>Sem registros.</b>
+    
+  {% else %}
+  
+    {% for p in pontos %}
+      {{ p }}<br>
+    {% endfor %}
+    
+  {% endif %}
+  
+  <br><br>
+  
+  <a href="/historico">Voltar</a>
+  
+{% endblock %}

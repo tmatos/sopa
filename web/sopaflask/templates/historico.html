@@ -1,0 +1,17 @@
+﻿{% extends "layout.html" %}
+
+{% block content %}
+  
+  {% if dic == None %}
+  
+    <b> Sem items sob observação.</b>
+    
+  {% else %}
+  
+    {% for key, value in lista.items() %}
+      <a href="historico/{{ key }}">Tarefa {{ key }}</a><br>
+    {% endfor %}
+    
+  {% endif %}
+  
+{% endblock %}

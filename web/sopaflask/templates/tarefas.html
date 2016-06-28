@@ -1,17 +1,23 @@
-{% extends "layout.html" %}
+﻿{% extends "layout.html" %}
 
 {% block content %}
-      <table border = 1>
-          <tr>
-               <th> <b>Tarefa</b> </th>
-               <td> <b>Code</b> </td>
-          </tr>
-      
-          {% for key, value in result.items() %}
-            <tr>
-               <th> {{ key }} </th>
-               <td> {{ value }} </td>
-            </tr>
-          {% endfor %}
-      </table>
+  <table class="table table-bordered table-hover">
+  
+    <thead>
+      <tr>
+         <th> <b>Tarefa</b> </th>
+         <th> <b>Code</b> </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for key, value in result.items() %}
+        <tr>
+           <td> {{ key }} </td>
+           <td> {{ value }} </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+    
+  </table>
 {% endblock %}

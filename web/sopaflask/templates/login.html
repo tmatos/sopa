@@ -1,0 +1,57 @@
+﻿{% extends "layout.html" %}
+
+{% block content %}
+
+  <div class="row">
+    <div class="col-lg-12 text-center">
+      <p class="lead">Login de usuário</p>
+    </div>
+  </div>
+  <!-- /.row -->
+  
+  <!-- talvez esse form fique melhor em vertical mesmo -->
+  <form method="post" action="/login" class="form-horizontal" role="form">
+    <fieldset>
+
+      <!-- Form Name -->
+      <!-- <legend>Login de usuário</legend> -->
+
+      <!-- Email input-->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="email">Email:</label>  
+        <div class="col-md-4">
+        <input type="email" id="email" name="email" required="true"
+               placeholder="Seu email cadastrado" class="form-control input-md">
+        </div>
+      </div>
+
+      <!-- Password input-->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="senha">Senha:</label>
+        <div class="col-md-4">
+          <input type="password" id="senha" name="senha" required="true"
+                 placeholder="Sua senha do sistema" class="form-control input-md">
+        </div>
+      </div>
+      
+      {% if erro %}
+        <div class="form-group">
+          <label class="col-md-4 control-label"></label>
+          <div class="col-md-4">
+            <strong>Erro: </strong> {{ erro }}
+          </div>
+        </div>
+      {% endif %}
+
+      <!-- Button -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="singlebutton"></label>
+        <div class="col-md-4">
+          <button type="submit"  id="singlebutton" name="singlebutton" class="btn btn-primary">Entrar</button>
+        </div>
+      </div>
+
+    </fieldset>
+  </form>
+
+{% endblock %}

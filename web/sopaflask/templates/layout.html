@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
 
@@ -33,20 +33,33 @@
 
 <body>
 
-  {% include 'menu.html' %}
+{% include 'menu.html' %}
 
-  <!-- Page Content -->
-  <div class="container">
-    {% block content %}
-    {% endblock %}
-  </div>
-  <!-- /.container -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="container">
+      {% for category, message in messages %}
+      <!-- category pode ser: success, info, warning, ou danger -->
+      <div class="alert alert-{{category}}">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+  
+<!-- Page Content -->
+<div class="container">
+  {% block content %}{% endblock %}
+</div>
+<!-- /.container -->
 
-  <!-- jQuery Version 1.11.1 -->
-  <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+<!-- jQuery Version 1.11.1 -->
+<script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
 
-  <!-- Bootstrap Core JavaScript -->
-  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<!-- Bootstrap Core JavaScript -->
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 
 </body>
 
