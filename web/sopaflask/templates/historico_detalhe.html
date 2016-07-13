@@ -1,21 +1,57 @@
 ﻿{% extends "layout.html" %}
 
 {% block content %}
-  
-  {% if pontos == None %}
-  
+
+<script src="{{ url_for('static', filename='js/moment.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Chart.js') }}"></script>
+
+{% if pontos == None %}
+
     <b>Sem registros.</b>
-    
-  {% else %}
-  
-    {% for p in pontos %}
-      {{ p }}<br>
-    {% endfor %}
-    
-  {% endif %}
-  
-  <br><br>
-  
-  <a href="/historico">Voltar</a>
+
+{% else %}
+
+    <canvas id="grafico" width="400" height="100"></canvas>
+
+    <script>
+    dados = [
+        {% for p in pontos %} { x : moment("{{ p['x'] }}"),  y : {{ p['y'] }} }, {% endfor %}
+    ]
+    </script>
+
+    <script>
+    var ctx = document.getElementById("grafico");
+    var scatterChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'Valor',
+                data: dados,
+                fill: false
+            }]
+        },
+        options: {
+            scales: {
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                        unit: 'day',
+                        displayFormats: {
+                            quarter: 'DD-MM-YYYY'
+                        }
+                    }
+                }],
+                yAxes: [{
+                    type: 'linear'
+                }]
+            }
+        }
+    });
+    </script>
+
+{% endif %}
+
+<br><br>
+<a href="/historico">Voltar</a>
   
 {% endblock %}

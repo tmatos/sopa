@@ -33,7 +33,8 @@ senha_hash = hash_password(senha)
 usuario = {
             "nome" : nome,
             "email" : email,
-            "senha" : senha_hash
+            "senha" : senha_hash,
+            "seq_tarefa" : 0       # sequencial pra guardar o indice maximo das tarefas desse usuario
         }
 
 db.users.insert_one(usuario)

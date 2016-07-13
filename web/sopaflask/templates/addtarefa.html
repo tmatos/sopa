@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <link href="{{ url_for('static', filename='jquery-ui/jquery-ui.css') }}" rel="stylesheet" />
+
+    <script src="{{ url_for('static', filename='js/modernizr-custom.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery-ui/jquery-ui.js') }}"></script>
+
+    <script>
+		$(function() {
+			if (!Modernizr.inputtypes['date']) {
+				$('input[type=date]').datepicker({
+					dateFormat: 'yyyy-mm-dd'
+				});
+			}s
+		});
+	</script>
+
+    <!-- typeahead.js 0.11.1 -->
+    {#<script src="{{ url_for('static', filename='js/typeahead.bundle.js') }}"></script>
+
+    <script>
+    var airports = new Bloodhound({
+      datumTokenizer: Bloodhound.tokenizers.whitespace,
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+
+      prefetch: '{{ url_for('static', filename='dados/airports.json') }}'
+    });
+
+    // passing in `null` for the `options` arguments will result in the default
+    // options being used
+    $('#prefetch .typeahead').typeahead(null, {
+      name: 'airports',
+      source: airports
+    });
+    </script>#}
+
+ <div class="container-fluid">
+  <div class="row">
+   <div class="col-md-6 col-sm-6 col-xs-12">
+
+    <form method="post" action="/addtarefa">
+
+     <div class="form-group ">
+      <label class="control-label " for="ida_origem">
+       Origem
+      </label>
+         <div id="prefetch">
+            <input class="typeahead form-control" id="ida_origem" name="ida_origem" type="text" placeholder="Aeroporto"
+            autocomplete="off" spellcheck="false" dir="auto"/>
+         </div>
+     </div>
+
+     <div class="form-group ">
+      <label class="control-label " for="ida_destino">
+       Destino
+      </label>
+      <input class="form-control" id="ida_destino" name="ida_destino" type="text"/>
+     </div>
+
+     <div class="form-group ">
+      <label class="control-label " for="ida_data">
+       Data
+      </label>
+      <input class="form-control" id="ida_data" name="ida_data" placeholder="DD/MM/YYYY" type="date" min="2016-07-10"/>
+     </div>
+
+     <div class="form-group ">
+      <label class="control-label " for="adultos">
+       Adultos
+      </label>
+      <input class="form-control" id="ida_adultos" name="ida_adultos" type="number" min="0" value="1" />
+     </div>
+
+     <div class="form-group ">
+      <label class="control-label " for="kids">
+       Crian&ccedil;as
+      </label>
+        <input class="form-control" id="ida_kids" name="ida_kids" type="number" min="0" value="0" />
+     </div>
+
+     <div class="form-group">
+      <div>
+
+       <button class="btn btn-primary " name="submit" type="submit">
+        Inserir
+       </button>
+
+       <a href="/tarefas" class="btn" role="button">Cancelar</a>
+
+      </div>
+     </div>
+
+    </form>
+
+   </div>
+  </div>
+ </div>
+
+{% endblock %}

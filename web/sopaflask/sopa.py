@@ -35,6 +35,63 @@ def tarefas():
         dic[key] = json.dumps(it['code'])
     
     return render_template('tarefas.html', result=dic)
+
+@app.route('/addtarefa', methods=['GET', 'POST'])
+def addtarefa():
+    if request.method == 'POST':
+        db = conexao()
+
+        ida_origem = request.form['ida_origem']
+        ida_destino = request.form['ida_destino']
+        ida_data = request.form['ida_data']
+        ida_adultos = int(request.form['ida_adultos'])
+        ida_kids = int(request.form['ida_kids'])
+
+        email = 'a@b'
+
+        filtro_user = {'email': email}
+
+        user = db.users.find_one(filtro_user)
+
+        numero = user['seq_tarefa'] + 1
+
+        db.users.update_one(
+            filtro_user,
+            {'$set': {'seq_tarefa': numero}}
+        )
+
+        objeto = {
+            "email" : email,
+            "numero" : numero,
+            "periodo" : 24,
+            "code" : {
+                "request" : {
+                    "slice" : [
+                        {
+                            "origin" : ida_origem,
+                            "date" : ida_data,
+                            "destination" : ida_destino
+                        }#,
+                        #{
+                        #    "origin" : volta_origem,
+                        #    "date" : volta_data,
+                        #    "destination" : volta_destino
+                        #}
+                    ],
+                    "passengers" : {
+                        "adultCount" : ida_adultos,
+                        "childCount" : ida_kids
+                    },
+                    "solutions" : 1
+                }
+            }
+        }
+
+        db.tarefas.insert_one(objeto)
+
+        return redirect(url_for('tarefas'))
+    else:
+        return render_template('addtarefa.html')
     
 @app.route('/historico')
 def historico():
@@ -52,13 +109,18 @@ def historico():
 @app.route('/historico/<tarefa>')
 def pontos(tarefa):
     db = conexao()
-    
-    cur = db.pontos.find( {'tarefa': int(tarefa)} ) 
+
+    filtro = {'tarefa': int(tarefa)}
+    cur = db.pontos.find(filtro).sort('_id', 1)
     
     lista = []
-    
+
     for it in cur:
-        lista.append( str(it['time']) ) 
+        if 'tripOption' in it['response']['trips']:
+            str_valor = it['response']['trips']['tripOption'][0]['saleTotal']
+            valor = float(str_valor[3:])
+            ponto = { 'x': str(it['time']), 'y': valor }
+            lista.append(ponto)
     
     return render_template('historico_detalhe.html', pontos=lista)
     
